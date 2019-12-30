@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Globizs Random Words</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    <!-- Boostrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	
+</head>
+<body>
+	<div class="container">
+		<br><br>
+		<div class="row">
+			<div class="col-md-12">
+				<h2>Words Generator</h2>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-md-2 col-xs-6">
+					<label class="control-label">Number of words:</label>
+			</div>
+			<div class="col-md-2 col-xs-6">
+					<input type="text" class="form-control text-center" autofocus="true" id="words"/>
+			</div>
+			<div class="col-md-2 col-xs-12">
+				<button class="btn btn-primary" id="generate">Generate</button>
+			</div>		
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-md-2">
+				<button class="btn btn-warning hide" id="hide">Hide</button>
+				<button class="btn btn-success hide" id="show">Show</button>
+			</div>		
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-md-12" id="output">
+					
+			</div>		
+		</div>
+	</div>
+	
+	<script type="text/javascript">	
+	var noWords	= document.getElementById("words");		
+	var output = document.getElementById("output");	 
+	var btnHide = document.getElementById("hide");
+	var btnShow = document.getElementById("show");
+	var btnGenerate = document.getElementById("generate");
+	var startTime = "";
+	var seconds = 0;
+	var minutes = 0;
+	var hours = 0;
+	var totalSeconds = 0;	
+	var run;
+	var displayWords;
+	var time;
+
+	 
+	btnGenerate.addEventListener("click",async()=>{
+
+		await fetch("./array.php")
+		.then( response =>  response.text())
+		.then( data => { 
+			 words	= data.split(" ");		  				
+		})
+		.catch(error=>console.log("Fetch Error="+error));	 		 		 	 
+			btnShow.className += ' hide';
+			btnHide.classList.remove("hide");
+			displayWords = "";
+			
+ 	
+		displayWords = "";
+		prevWords = [];
+		while(prevWords.length<noWords.value) {		 			
+			index = Math.floor(Math.random() * (words.length-1)) ;
+			if(prevWords.indexOf(words[index]==-1))	{	 			
+	 			displayWords += words[index]+" "; 
+	 			prevWords.push(words[index]);
+	 		}
+		}
+		clearInterval(run);
+		output.innerHTML  = displayWords;
+		run = setInterval(()=> {
+ 			++totalSeconds; 			
+ 			seconds = totalSeconds%60; 			
+ 			hours = Math.floor(totalSeconds/3600);
+ 			minutes = Math.floor( totalSeconds/60)-hours*60;
+ 			},1000);
+		});
+	
+	 			
+	  	document.getElementById("hide").addEventListener("click",()=> {
+
+	  		btnShow.classList.toggle('hide');
+		  	if(!btnHide.classList.contains('hide')) {
+		  		time = "";
+		 		clearInterval(run);
+		 		btnHide.className  += " hide";
+		 		btnShow.classList.remove('hide');
+		 		btnGenerate.classList.remove('hide');		 				 				 		
+		 		time = `<div><h3>Time:</h3></div><div><b>
+		 		${pad(hours)} Hr: ${pad(minutes)} min : ${pad(seconds)} sec </b></div>`;		
+		 		output.innerHTML = time;		 				 		
+		 	}
+		 	else{	 		
+		 		btnHide.classList.remove("hide");
+
+		 		// btnGenerate.className += ' hide';	 		
+		 	}	 		 		 		 		 		 
+		});	
+
+		document.getElementById("show").addEventListener("click",()=> {
+			btnShow.classList.toggle('hide');
+			if(!btnHide.classList.contains('hide')) {
+		 		clearInterval(run);
+		 		btnHide.className  += " hide";
+		 		output.innerHTML = displayWords;			 		
+		 	}
+		 	else {
+		 		btnHide.classList.remove('hide');
+		 		output.innerHTML = displayWords;
+		 	}
+		});
+		 
+		var pad = (val) => {
+		 	if(val<10)
+		 		return "0"+val;
+		 	else
+		 		return val;
+		 	}			 	
+	
+	</script>
+	<style type="text/css">
+		.hide{
+			display: none;
+		}
+		#output {
+			font-size: 20px;
+			text-align: justify;
+		}
+	</style>
+
+</body>
+</html>
