@@ -64,8 +64,7 @@
 	 	let min = Math.pow(10,digits.value-1);
 	 	let max = 9*Math.pow(10,digits.value-1);
 	 	if((max+min)<count.value)
-	 		alert(`Numbers to be displayed exceeds the count of numbers  in the range of ${digits.value} digit/s numbers. 
-	 			Please enter another number within the range (maximun: ${max+min}) `);
+	 		alert(`Numbers to be displayed exceeds the count of numbers  in the range of ${digits.value} digit/s numbers. Please enter another number within the range (maximun: ${max+min}) `);
 	 	else {
 	 		while(numberList.length<count.value-1) {
 	 		newNumber = Math.floor(min + Math.random() * max);
